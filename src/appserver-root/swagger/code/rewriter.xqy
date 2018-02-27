@@ -23,8 +23,8 @@ xquery version "1.0-ml";
 	Unoptimized, on each request:
 		Open swagger file
 			If none, return 500 error because no API configured
-			(How do find this file?  Look at appserver config via admin API?  That's expensive, need to cache location)
-		Parse it to find the enpoint matching the request verb, content type and path pattern
+			(How to find this file?  Look at appserver config via admin API?  That's expensive, need to cache location)
+		Parse it to find the endpoint matching the request verb, content type and path pattern
 		Invoke the XQuery (or JavaScript?) module named in the x-marklogic-handler field
 			If none, return 500 error because no handler configured
 
@@ -33,7 +33,7 @@ xquery version "1.0-ml";
 			If none, return 500 error because no API configured
 		Get timestamp of swagger file
 		Get cached dispatch map from server variable, which will include a timestamp
-			If no cached map, of if timestamp of swagger file is newer
+			If no cached map, or if timestamp of swagger file is newer
 				Parse swagger.yaml and build dispatch map, with current timestamp
 					If syntax errors or missing module path
 						Return 500 because swagger spec is invalid

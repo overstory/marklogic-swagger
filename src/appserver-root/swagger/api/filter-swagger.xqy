@@ -17,7 +17,7 @@
 
 xquery version "1.0-ml";
 
-"Finish Me"
+"Finish Me filter"
 
 (:
 	This module will be the effective default.xqy to serve out the swagger file,

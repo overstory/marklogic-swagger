@@ -3,9 +3,9 @@ info:
   version: "1.0"
   title: "My awesome REST API"
   description: "Does some cool stull that people really like."
-servers:
-    - url: "http://localhost:10000"
-      description: Test server
+#servers:
+#    - url: "http://localhost:9000"
+#      description: Test server
 
 tags:
 - name: "api"
@@ -13,8 +13,11 @@ tags:
 
 paths:
   /api:
+    summary: The Swagger API blueprint
     description: The Swagger API blueprint, as YAML or HTML
     get:
+      tags:
+        - "api"
       summary: The Swagger API
       operationId: apiYaml
       x-marklogic-handler: /swagger/code/filter-swagger.xqy
@@ -26,8 +29,8 @@ paths:
                 example: 'openapi: "3.0.0"
                   info:
                     version: "1.0"
-                    title: "My awesome REST API"
-                    description: "Does some cool stull that people really like."'
+                    title: "My Awesome REST API"
+                    description: "Does some cool stuff that people really like."'
               text/html:
                 example: '<html>
                   ...

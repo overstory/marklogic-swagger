@@ -17,4 +17,19 @@
 
 xquery version "1.0-ml";
 
-"Finish Me"
+declare variable $error:errors as node()* external;
+
+xdmp:set-response-content-type ("application/xml"),
+
+if (fn:exists ($error:errors))
+then (
+	xdmp:set-response-code ((xdmp:get-response-code(), 500)[1], "XXX"),
+	$error:errors
+) else
+	<oops>
+		<msg>No error info passed</msg>
+		<code>{ xdmp:get-response-code() }</code>
+	<url>{ xdmp:get-request-url() }</url>
+	</oops>
+
+

@@ -17,7 +17,25 @@
 
 xquery version "1.0-ml";
 
-"Finish Me"
+declare variable $path := xdmp:get-request-path();
+declare variable $accept := xdmp:get-request-header ("Accept", "text/html");
+declare variable $want-yaml as xs:boolean := fn:matches ($accept, "text/yaml|text/x-yaml");
+
+
+xdmp:add-response-header ("Cache-Control", "no-cache"),
+if (fn:matches ($path, "^/api(/)?$") or fn:matches ($path, "^/api/swagger\.yaml$"))
+then (
+	if ($want-yaml or fn:matches ($path, "^/api/swagger\.yaml$"))
+	then (
+		xdmp:set-response-content-type ("text/x-yaml"),
+		"/swagger/api/swagger.yaml"
+	) else "/swagger/api/swagger-ui/"
+) else
+if (fn:matches ($path, "^/api.+"))
+then fn:replace ($path, "^/api(.*)", "/swagger/api/swagger-ui$1")
+else xdmp:get-request-url()	(: This is where the Swagger parsing bit would go :)
+
+
 
 (:
 	Unoptimized, on each request:

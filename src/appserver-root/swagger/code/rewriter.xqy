@@ -22,7 +22,6 @@ declare variable $accept := xdmp:get-request-header ("Accept", "text/html");
 declare variable $want-yaml as xs:boolean := fn:matches ($accept, "text/yaml|text/x-yaml");
 
 
-xdmp:add-response-header ("Cache-Control", "no-cache"),
 if (fn:matches ($path, "^/api(/)?$") or fn:matches ($path, "^/api/swagger\.yaml$"))
 then (
 	if ($want-yaml or fn:matches ($path, "^/api/swagger\.yaml$"))

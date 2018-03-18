@@ -20,7 +20,7 @@ paths:
         - "api"
       summary: The Swagger API
       operationId: apiYaml
-      x-marklogic-handler: /swagger/code/filter-swagger.xqy
+      x-marklogic-main-module: /swagger/code/filter-swagger.xqy
       responses:
         200:
           description: Good response, returns interface spec as OpenAPI Swagger or HTML
@@ -35,3 +35,17 @@ paths:
                 example: '<html>
                   ...
                   </html>'
+  /simple-module-get:
+    summary: Test Module Get
+    description: Endpoint
+    get:
+      tags:
+        - "Test APIs"
+      summary: Endpoint to test main module trigger
+      x-marklogic-main-module: /swagger/sample/test-module-get.xqy
+      responses:
+        200:
+          description: Good response
+          content:
+              text/plain:
+                example: 'Module GET'

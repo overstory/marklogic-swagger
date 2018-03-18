@@ -2,12 +2,12 @@ xquery version "1.0-ml";
 
 (:~
 : User: craig
-: Date: 2018-03-12
-: Time: 9:51 PM
+: Date: 2018-03-17
+: Time: 10:38 PM
 : To change this template use File | Settings | File Templates.
 :)
 
-"Simple Module GET",
+"Pathed match GET",
 "Request method: " || xdmp:get-request-method(),
 "Original URL: " || xdmp:get-original-url(),
 "Request URL: " || xdmp:get-request-url(),

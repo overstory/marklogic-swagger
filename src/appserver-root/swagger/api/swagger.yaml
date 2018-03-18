@@ -36,13 +36,27 @@ paths:
                   ...
                   </html>'
   /simple-module-get:
-    summary: Test Module Get
-    description: Endpoint
+    summary: Module GET
+    description: Simple example endpoint
     get:
       tags:
         - "Test APIs"
-      summary: Endpoint to test main module trigger
+      summary: Simple GET to trigger main module
       x-marklogic-main-module: /swagger/sample/test-module-get.xqy
+      responses:
+        200:
+          description: Good response
+          content:
+              text/plain:
+                example: 'Module GET'
+  /{path-var-1}/path-match-module-get/{path-var-2}:
+    summary: Path Matched Get
+    description: Example endpoint with path matching
+    get:
+      tags:
+        - "Test APIs"
+      summary: Simple GET to trigger path-matched main module
+      x-marklogic-main-module: /swagger/sample/test-module-path-matched-get.xqy
       responses:
         200:
           description: Good response

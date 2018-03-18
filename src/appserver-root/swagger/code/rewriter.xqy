@@ -17,15 +17,42 @@
 
 xquery version "1.0-ml";
 
-declare variable $SWAGGER-PATH := "/swagger/api/swagger.yaml";
+declare namespace s="http://www.w3.org/2005/xpath-functions";
 
+declare variable $SWAGGER-PATH := "/swagger/api/swagger.yaml";
 declare variable $MAIN-MODULE-PROPERTY-NAME := "x-marklogic-main-module";
 
 declare variable $path := xdmp:get-request-path();
 declare variable $request-method := fn:lower-case(xdmp:get-request-method());
-
 declare variable $accept := xdmp:get-request-header("Accept", "text/html");
 declare variable $want-yaml as xs:boolean := fn:matches($accept, "text/yaml|text/x-yaml");
+
+declare function local:extract-path-params($path-pattern as xs:string, $path as xs:string) as xs:string*
+{
+    fn:string-join(
+            let $path-parts := fn:tokenize($path, "/")
+            for $part at $x in fn:tokenize($path-pattern, "/")
+            return
+                let $analyzed-string := fn:analyze-string($part, "\{([\w\d_-]+)\}")
+                return
+                    if ($analyzed-string/s:match) then
+                        $analyzed-string/s:match/s:group/fn:string() || "=" || $path-parts[$x]
+                    else
+                        ()
+            , "&amp;")
+};
+
+declare function local:path-matches($path-pattern as xs:string, $path as xs:string) as xs:boolean {
+    let $parts :=
+        for $part in fn:tokenize($path-pattern, "/")
+        return
+            if (fn:matches($part, "\{[\w\d_-]+\}")) then
+                "[\w\d_-]+"
+            else
+                $part
+    let $regex := fn:string-join($parts, "/")
+    return fn:matches($path, $regex)
+};
 
 
 declare function local:redirect() {
@@ -46,7 +73,16 @@ declare function local:redirect() {
                   const yaml = require('/swagger/lib/js-yaml');
                   yaml.safeLoad(yamlString);
                 ", ("yamlString", $yaml-from-file)))
-    let $redirect-path :=  xdmp:value("$yaml/paths/*[fn:matches(fn:name(.), $path)]/" || $request-method || "/" || $MAIN-MODULE-PROPERTY-NAME)
+    let $redirect-path := xdmp:value("$yaml/paths/*[local:path-matches(fn:name(.), $path)]/" || $request-method || "/" || $MAIN-MODULE-PROPERTY-NAME)
+    let $query-string := fn:substring-after(xdmp:get-request-url(), "?")
+    let $_ := xdmp:log("rewriter.xqy -- query-string: " || $query-string, "debug")
+    let $path-params := local:extract-path-params($yaml/paths/*[local:path-matches(fn:name(.), $path)]/fn:name(), $path)
+    let $_ := xdmp:log("rewriter.xqy -- path params: " || $path-params, "debug")
+    let $redirect-path :=
+        if ($query-string or $path-params) then
+            $redirect-path || "?" || fn:string-join(($query-string, $path-params), "&amp;")
+        else
+            $redirect-path
     let $_ := xdmp:log("rewriter.xqy -- redirect-path: " || $redirect-path, "debug")
     return $redirect-path
 
@@ -65,7 +101,12 @@ else
     if (fn:matches($path, "^/api.+")) then
         fn:replace($path, "^/api(.*)", "/swagger/api/swagger-ui$1")
     else
-        local:redirect()
+        let $redirect-path := local:redirect()
+        return
+            if ($redirect-path) then
+                $redirect-path
+            else
+                xdmp:get-request-path()
 
 
 

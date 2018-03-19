@@ -17,14 +17,17 @@
 
 xquery version "1.0-ml";
 
-"Simple Module GET",
-"Request method: " || xdmp:get-request-method(),
-"Original URL: " || xdmp:get-original-url(),
-"Request URL: " || xdmp:get-request-url(),
-"Request Path: " || xdmp:get-request-path(),
-"Query string params: " ||
-    fn:string-join(
-        for $i in xdmp:get-request-field-names()
-        return
-            $i || ": " || xdmp:get-request-field($i),
-    "   ")
+let $module-name := xdmp:get-request-field("module-name")
+let $function := xdmp:get-request-field("function-name")
+let $ns := xdmp:get-request-field("function-ns")
+
+let $_ := xdmp:log(fn:concat("router.xqy -- library-module:  ", $module-name), "debug")
+let $_ := xdmp:log(fn:concat("router.xqy -- ns:  ", $ns), "debug")
+let $_ := xdmp:log(fn:concat("router.xqy -- function:  ", $function), "debug")
+
+return
+    xdmp:eval(fn:concat("
+      import module namespace x = '", $ns, "' at '", $module-name, "';
+      x:", $function, "()
+    "
+    ))

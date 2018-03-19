@@ -17,14 +17,18 @@
 
 xquery version "1.0-ml";
 
-"Simple Module GET",
-"Request method: " || xdmp:get-request-method(),
-"Original URL: " || xdmp:get-original-url(),
-"Request URL: " || xdmp:get-request-url(),
-"Request Path: " || xdmp:get-request-path(),
-"Query string params: " ||
+module namespace test-function-get = "http://it.com/ns";
+
+declare function test-get() {
+    "Simple Function GET",
+    "Request method: " || xdmp:get-request-method(),
+    "Original URL: " || xdmp:get-original-url(),
+    "Request URL: " || xdmp:get-request-url(),
+    "Request Path: " || xdmp:get-request-path(),
+    "Query string params: " ||
     fn:string-join(
-        for $i in xdmp:get-request-field-names()
-        return
-            $i || ": " || xdmp:get-request-field($i),
-    "   ")
+            for $i in xdmp:get-request-field-names()
+            return
+                $i || ": " || xdmp:get-request-field($i),
+            "   ")
+};

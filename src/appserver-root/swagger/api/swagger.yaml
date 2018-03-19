@@ -63,3 +63,19 @@ paths:
           content:
               text/plain:
                 example: 'Module GET'
+  /{path-var-1}/path-match-function-get/{path-var-2}:
+    summary: Function Get
+    description: Example endpoint with executed from a function in a library module
+    get:
+      tags:
+        - "Test APIs"
+      summary: Simple GET to trigger path-matched main module
+      x-marklogic-library-module: /swagger/sample/test-function-get.xqy
+      x-marklogic-function-ns: http://it.com/ns
+      x-marklogic-function-name: test-get
+      responses:
+        200:
+          description: Good response
+          content:
+              text/plain:
+                example: 'Module GET'

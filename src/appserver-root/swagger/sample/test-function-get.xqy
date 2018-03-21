@@ -32,3 +32,18 @@ declare function test-get() {
                 $i || ": " || xdmp:get-request-field($i),
             "   ")
 };
+
+declare function test-post() {
+    "Pathed Function POST",
+    "Request method: " || xdmp:get-request-method(),
+    "Original URL: " || xdmp:get-original-url(),
+    "Request URL: " || xdmp:get-request-url(),
+    "Request Path: " || xdmp:get-request-path(),
+    "Query string params: " ||
+    fn:string-join(
+            for $i in xdmp:get-request-field-names()
+            return
+                $i || ": " || xdmp:get-request-field($i),
+            "   "),
+    "Request Body: ", xdmp:get-request-body("xml")
+};

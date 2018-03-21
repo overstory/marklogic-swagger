@@ -79,3 +79,53 @@ paths:
           content:
               text/plain:
                 example: 'Module GET'
+  /{path-var-1}/path-match-module-post/{path-var-2}:
+    summary: Module Post
+    description: Example endpoint to post content to a module
+    post:
+      tags:
+        - "Test APIs"
+      summary: Simple POST to trigger path-matched main module with a payload in the HTTP request body
+      x-marklogic-main-module: /swagger/sample/test-module-path-matched-post.xqy
+      requestBody:
+        description: Sample XML payload starting with a <sample> element
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/sample'
+      responses:
+        200:
+          description: Good response
+          content:
+              text/plain:
+                example: 'Uploaded'
+  /{path-var-1}/path-match-function-post/{path-var-2}:
+    summary: Function Post
+    description: Example endpoint to post content to a function
+    post:
+      tags:
+        - "Test APIs"
+      summary: Simple POST to trigger path-matched to a library module with a payload in the HTTP request body
+      x-marklogic-library-module: /swagger/sample/test-function-get.xqy
+      x-marklogic-function-ns: http://it.com/ns
+      x-marklogic-function-name: test-post
+      requestBody:
+        description: Sample XML payload starting with a <sample> element
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/sample'
+      responses:
+        200:
+          description: Good response
+          content:
+              text/plain:
+                example: 'Uploaded'
+components:
+  schemas:
+    sample:
+      type: object
+      xml:
+        name: 'sample'

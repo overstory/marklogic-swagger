@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2013-2017 OverStory Ltd <copyright@overstory.co.uk> and other contributors
  * (see the CONTRIBUTORS file).
@@ -26,7 +25,16 @@ repositories {
 
 // ------------------------------
 
-task wrapper (type: Wrapper) {
+task wrapper(type: Wrapper) {
 	gradleVersion = '4.5.1'
 }
 
+task build(type: Copy) {
+	from 'src/appserver-root/swagger'
+	into "${project.buildDir}/swagger"
+	exclude 'sample/**'
+}
+
+task clean(type: Delete) {
+	delete project.buildDir
+}

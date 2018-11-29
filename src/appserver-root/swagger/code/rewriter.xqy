@@ -54,7 +54,7 @@ declare function local:path-matches($path-pattern as xs:string, $path as xs:stri
                 "[\w\d_-]+"
             else
                 $part
-    let $regex := fn:string-join($parts, "/")
+    let $regex := "^" || fn:string-join($parts, "/") || "$"
     return fn:matches($path, $regex)
 };
 
@@ -65,7 +65,7 @@ declare function local:redirect() {
         (: Modules on database :)
             xdmp:eval("
           declare variable $swagger-file as xs:string external;
-          fn:doc($swagger-path)
+          fn:doc($swagger-file)
         ", (xs:QName("swagger-file"), $SWAGGER-PATH), <options xmlns="xdmp:eval"><database>{xdmp:modules-database()}</database></options>)
         else
         (: Modules on filesystem :)
@@ -96,7 +96,7 @@ declare function local:redirect() {
     let $path-params := local:extract-path-params($yaml/paths/*[local:path-matches(fn:name(.), $path)]/fn:name(), $path)
     let $_ := xdmp:log("rewriter.xqy -- path params: " || $path-params, "debug")
     let $redirect-path :=
-        if ($query-string or $path-params) then
+        if (($query-string or $path-params) and $redirect-path) then
             if (fn:contains($redirect-path, "?")) then
                 $redirect-path || "&amp;" || fn:string-join(($query-string, $path-params), "&amp;")
             else
